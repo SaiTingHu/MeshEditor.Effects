@@ -11,7 +11,8 @@ namespace MeshEditor.Effects
             base.OnMeshEffectsGUI();
 
             PropertyField("Gravitation");
-            PropertyField("CentrifugalForce");
+            PropertyField("CentripetalDirection");
+            PropertyField("CentripetalForce");
             PropertyField("Center");
             PropertyField("Radius");
         }
@@ -19,6 +20,7 @@ namespace MeshEditor.Effects
         private void OnSceneGUI()
         {
             Handles.Label(Target.Center, "Vortex Center");
+            Handles.DrawLine(Target.transform.position, Target.Center);
             Target.Center = Handles.PositionHandle(Target.Center, Quaternion.identity);
             Target.Radius = Handles.RadiusHandle(Quaternion.identity, Target.Center, Target.Radius);
         }

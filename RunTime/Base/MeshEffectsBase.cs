@@ -14,7 +14,7 @@ namespace MeshEditor.Effects
         [SerializeField] protected MeshFilter _meshFilter;
         [SerializeField] protected MeshRenderer _meshRenderer;
         [SerializeField] protected SkinnedMeshRenderer _skinnedMeshRenderer;
-        [SerializeField] protected bool _isPlayOnStart;
+        [SerializeField] protected bool _isPlayOnStart = true;
         protected Mesh _mesh;
         protected Material[] _materials;
 
@@ -54,6 +54,11 @@ namespace MeshEditor.Effects
             {
                 _mesh.vertices = UpdateEffect(_mesh.vertices);
             }
+        }
+
+        protected virtual void OnDestroy()
+        {
+            
         }
 
         protected abstract Vector3[] UpdateEffect(Vector3[] vertices);
