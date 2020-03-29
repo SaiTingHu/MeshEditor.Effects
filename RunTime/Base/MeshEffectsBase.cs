@@ -10,34 +10,19 @@ namespace MeshEditor.Effects
     /// </summary>
     public abstract class MeshEffectsBase : MonoBehaviour
     {
-        [SerializeField] protected MeshType _meshType = MeshType.MeshRenderer;
-        [SerializeField] protected MeshFilter _meshFilter;
-        [SerializeField] protected MeshRenderer _meshRenderer;
-        [SerializeField] protected SkinnedMeshRenderer _skinnedMeshRenderer;
         [SerializeField] protected bool _isPlayOnStart = true;
-        protected Mesh _mesh;
-        protected Material[] _materials;
-
-        /// <summary>
-        /// 是否有效
-        /// </summary>
-        public bool IsValid { get; private set; } = false;
+        protected SkinnedMeshRenderer _skinnedMeshRenderer { get; private set; }
+        protected MeshFilter _meshFilter { get; private set; }
+        protected MeshRenderer _meshRenderer { get; private set; }
+        protected Vector3[] _originalVertices { get; private set; }
+        protected Mesh _mesh { get; private set; }
+        protected Material[] _materials { get; private set; }
         
-        private bool _isPlaying = false;
-        private Vector3[] _originalVertices;
-
+        public bool IsPlaying { get; private set; } = false;
+        
         protected virtual void Awake()
         {
-            IsValid = CheckValidity();
-
-            if (IsValid)
-            {
-                _mesh = GetMesh();
-                _materials = GetMaterials();
-
-                _originalVertices = new Vector3[_mesh.vertices.Length];
-                _mesh.vertices.CopyTo(_originalVertices, 0);
-            }
+            Initialization();
         }
 
         protected virtual void Start()
@@ -50,7 +35,7 @@ namespace MeshEditor.Effects
 
         protected virtual void Update()
         {
-            if (_isPlaying)
+            if (IsPlaying)
             {
                 _mesh.vertices = UpdateEffect(_mesh.vertices);
             }
@@ -68,13 +53,24 @@ namespace MeshEditor.Effects
         /// </summary>
         public virtual void Play()
         {
-            if (IsValid)
+            if (_skinnedMeshRenderer != null)
             {
-                _isPlaying = true;
+                _skinnedMeshRenderer.enabled = false;
+                _meshRenderer.enabled = true;
+
+                _mesh = _meshFilter.mesh;
+                if (_mesh == null) _mesh = new Mesh();
+                _skinnedMeshRenderer.BakeMesh(_mesh);
+                _meshFilter.mesh = _mesh;
+            }
+            
+            if (_mesh != null)
+            {
+                IsPlaying = true;
             }
             else
             {
-                Debug.LogWarning("当前特效是无效的，无法播放！");
+                Debug.LogWarning("播放网格涡流特效失败：丢失网格数据！");
             }
         }
 
@@ -83,77 +79,58 @@ namespace MeshEditor.Effects
         /// </summary>
         public virtual void Pause()
         {
-            _isPlaying = false;
+            IsPlaying = false;
         }
 
         /// <summary>
         /// 停止特效
         /// </summary>
         /// <param name="isRestoreMesh">是否还原网格为初始状态</param>
-        public virtual void Stop(bool isRestoreMesh = false)
+        public virtual void Stop(bool isRestoreMesh = true)
         {
-            _isPlaying = false;
+            if (_skinnedMeshRenderer != null)
+            {
+                _skinnedMeshRenderer.enabled = true;
+                _meshRenderer.enabled = false;
+            }
 
-            if (IsValid && isRestoreMesh)
+            IsPlaying = false;
+
+            if (_mesh != null && _originalVertices != null && isRestoreMesh)
             {
                 Vector3[] vertices = _mesh.vertices;
                 _originalVertices.CopyTo(vertices, 0);
                 _mesh.vertices = vertices;
             }
         }
-        
-        private bool CheckValidity()
+
+        private void Initialization()
         {
-            if (_meshType == MeshType.MeshRenderer)
+            _skinnedMeshRenderer = GetComponent<SkinnedMeshRenderer>();
+
+            _meshFilter = GetComponent<MeshFilter>();
+            if (_meshFilter == null) _meshFilter = gameObject.AddComponent<MeshFilter>();
+
+            _meshRenderer = GetComponent<MeshRenderer>();
+            if (_meshRenderer == null) _meshRenderer = gameObject.AddComponent<MeshRenderer>();
+
+            if (_skinnedMeshRenderer != null)
             {
-                if (_meshFilter == null || _meshRenderer == null || _meshFilter.mesh == null)
+                _materials = _meshRenderer.materials = _skinnedMeshRenderer.materials;
+                _meshRenderer.enabled = false;
+            }
+            else
+            {
+                _mesh = _meshFilter.mesh;
+                _materials = _meshRenderer.materials;
+                _meshRenderer.enabled = true;
+
+                if (_mesh != null)
                 {
-                    return false;
+                    _originalVertices = new Vector3[_mesh.vertices.Length];
+                    _mesh.vertices.CopyTo(_originalVertices, 0);
                 }
             }
-            else if (_meshType == MeshType.SkinnedMeshRenderer)
-            {
-                if (_skinnedMeshRenderer == null || _skinnedMeshRenderer.sharedMesh == null)
-                {
-                    return false;
-                }
-            }
-            return true;
-        }
-
-        private Mesh GetMesh()
-        {
-            if (_meshType == MeshType.MeshRenderer)
-            {
-                return _meshFilter.mesh;
-            }
-            else if (_meshType == MeshType.SkinnedMeshRenderer)
-            {
-                return _skinnedMeshRenderer.sharedMesh;
-            }
-            return null;
-        }
-
-        private Material[] GetMaterials()
-        {
-            if (_meshType == MeshType.MeshRenderer)
-            {
-                return _meshRenderer.materials;
-            }
-            else if (_meshType == MeshType.SkinnedMeshRenderer)
-            {
-                return _skinnedMeshRenderer.materials;
-            }
-            return null;
-        }
-
-        /// <summary>
-        /// 网格类型
-        /// </summary>
-        public enum MeshType
-        {
-            MeshRenderer = 0,
-            SkinnedMeshRenderer = 1
         }
     }
 }

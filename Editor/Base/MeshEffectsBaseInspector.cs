@@ -9,51 +9,15 @@ namespace MeshEditor.Effects
         protected M Target;
 
         private Dictionary<string, SerializedProperty> _serializedPropertys = new Dictionary<string, SerializedProperty>();
-        private SerializedProperty _meshType;
-        private SerializedProperty _meshFilter;
-        private SerializedProperty _meshRenderer;
-        private SerializedProperty _skinnedMeshRenderer;
-        private int _meshTypeCache;
 
         protected virtual void OnEnable()
         {
             Target = target as M;
-            _meshType = GetProperty("_meshType");
-            _meshFilter = GetProperty("_meshFilter");
-            _meshRenderer = GetProperty("_meshRenderer");
-            _skinnedMeshRenderer = GetProperty("_skinnedMeshRenderer");
-            _meshTypeCache = -1;
         }
 
         public sealed override void OnInspectorGUI()
         {
             PropertyField("_isPlayOnStart", "Play On Start");
-            PropertyField("_meshType", "Mesh Type");
-
-            GUI.enabled = false;
-            if (_meshType.enumValueIndex == 0)
-            {
-                PropertyField("_meshFilter", "Mesh Filter");
-                PropertyField("_meshRenderer", "Mesh Renderer");
-
-                if (_meshTypeCache != 0)
-                {
-                    _meshTypeCache = 0;
-                    _meshFilter.objectReferenceValue = Target.GetComponent<MeshFilter>();
-                    _meshRenderer.objectReferenceValue = Target.GetComponent<MeshRenderer>();
-                }
-            }
-            else if (_meshType.enumValueIndex == 1)
-            {
-                PropertyField("_skinnedMeshRenderer", "Skinned Mesh Renderer");
-
-                if (_meshTypeCache != 1)
-                {
-                    _meshTypeCache = 1;
-                    _skinnedMeshRenderer.objectReferenceValue = Target.GetComponent<SkinnedMeshRenderer>();
-                }
-            }
-            GUI.enabled = true;
 
             OnMeshEffectsGUI();
 
