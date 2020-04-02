@@ -14,11 +14,12 @@ namespace MeshEditor.Effects
         protected SkinnedMeshRenderer _skinnedMeshRenderer { get; private set; }
         protected MeshFilter _meshFilter { get; private set; }
         protected MeshRenderer _meshRenderer { get; private set; }
-        protected Vector3[] _originalVertices { get; private set; }
         protected Mesh _mesh { get; private set; }
         protected Material[] _materials { get; private set; }
         
         public bool IsPlaying { get; private set; } = false;
+
+        private MeshData _data;
         
         protected virtual void Awake()
         {
@@ -37,7 +38,8 @@ namespace MeshEditor.Effects
         {
             if (IsPlaying)
             {
-                _mesh.vertices = UpdateEffect(_mesh.vertices);
+                UpdateEffect(_data);
+                _mesh.vertices = _data.GetVertices();
             }
         }
 
@@ -46,31 +48,29 @@ namespace MeshEditor.Effects
             
         }
 
-        protected abstract Vector3[] UpdateEffect(Vector3[] vertices);
+        protected abstract void UpdateEffect(MeshData meshData);
 
         /// <summary>
         /// 播放特效
         /// </summary>
         public virtual void Play()
         {
-            if (_skinnedMeshRenderer != null)
+            if (_mesh != null && _data != null)
             {
-                _skinnedMeshRenderer.enabled = false;
-                _meshRenderer.enabled = true;
+                if (_skinnedMeshRenderer != null)
+                {
+                    _skinnedMeshRenderer.enabled = false;
+                    _meshRenderer.enabled = true;
 
-                _mesh = _meshFilter.mesh;
-                if (_mesh == null) _mesh = new Mesh();
-                _skinnedMeshRenderer.BakeMesh(_mesh);
-                _meshFilter.mesh = _mesh;
-            }
-            
-            if (_mesh != null)
-            {
+                    _skinnedMeshRenderer.BakeMesh(_mesh);
+                    _data.ReadData(_mesh.vertices);
+                }
+
                 IsPlaying = true;
             }
             else
             {
-                Debug.LogWarning("播放网格涡流特效失败：丢失网格数据！");
+                Debug.LogWarning("播放网格特效失败：丢失网格数据！");
             }
         }
 
@@ -96,11 +96,9 @@ namespace MeshEditor.Effects
 
             IsPlaying = false;
 
-            if (_mesh != null && _originalVertices != null && isRestoreMesh)
+            if (_mesh != null && _data != null && isRestoreMesh)
             {
-                Vector3[] vertices = _mesh.vertices;
-                _originalVertices.CopyTo(vertices, 0);
-                _mesh.vertices = vertices;
+                _mesh.vertices = _data.GetOriginalVertices();
             }
         }
 
@@ -116,20 +114,32 @@ namespace MeshEditor.Effects
 
             if (_skinnedMeshRenderer != null)
             {
+                if (_skinnedMeshRenderer.sharedMesh != null)
+                {
+                    _mesh = new Mesh();
+                    _skinnedMeshRenderer.BakeMesh(_mesh);
+                    _meshFilter.mesh = _mesh;
+                }
                 _materials = _meshRenderer.materials = _skinnedMeshRenderer.materials;
                 _meshRenderer.enabled = false;
+                
+                GenerateMeshData(_mesh);
             }
             else
             {
                 _mesh = _meshFilter.mesh;
                 _materials = _meshRenderer.materials;
                 _meshRenderer.enabled = true;
+                
+                GenerateMeshData(_mesh);
+            }
+        }
 
-                if (_mesh != null)
-                {
-                    _originalVertices = new Vector3[_mesh.vertices.Length];
-                    _mesh.vertices.CopyTo(_originalVertices, 0);
-                }
+        private void GenerateMeshData(Mesh mesh)
+        {
+            if (mesh != null)
+            {
+                _data = new MeshData(mesh);
             }
         }
     }

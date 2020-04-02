@@ -74,20 +74,20 @@ namespace MeshEditor.Effects
             _centerArea.SetActive(false);
         }
 
-        protected override Vector3[] UpdateEffect(Vector3[] vertices)
+        protected override void UpdateEffect(MeshData meshData)
         {
             _centerArea.transform.rotation *= _centerAreaForce;
 
-            for (int i = 0; i < vertices.Length; i++)
+            for (int i = 0; i < meshData.Vertices.Count; i++)
             {
-                float distance = Vector3.Distance(vertices[i], _realCenter);
+                Vertex vertex = meshData.Vertices[i];
+                float distance = Vector3.Distance(vertex.Position, _realCenter);
                 if (distance > Radius)
                 {
-                    vertices[i] = ApplyGravitation(vertices[i], distance + Time.deltaTime);
-                    vertices[i] = ApplyCentripetal(vertices[i], distance + Time.deltaTime);
+                    vertex.Position = ApplyGravitation(vertex.Position, distance + Time.deltaTime);
+                    vertex.Position = ApplyCentripetal(vertex.Position, distance + Time.deltaTime);
                 }
             }
-            return vertices;
         }
 
         //应用引力
