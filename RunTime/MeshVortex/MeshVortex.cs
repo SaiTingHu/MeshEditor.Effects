@@ -13,13 +13,13 @@ namespace MeshEditor.Effects
         /// </summary>
         public float Gravitation = 1;
         /// <summary>
-        /// 涡流中心的向心力方向
-        /// </summary>
-        public Vector3 CentripetalDirection = new Vector3(0, 90, 0);
-        /// <summary>
         /// 涡流中心的向心力大小
         /// </summary>
         public float CentripetalForce = 1;
+        /// <summary>
+        /// 涡流中心的向心力方向
+        /// </summary>
+        public Vector3 CentripetalDirection = new Vector3(0, 90, 0);
         /// <summary>
         /// 涡流中心
         /// </summary>

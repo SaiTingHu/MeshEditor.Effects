@@ -9,17 +9,29 @@ namespace MeshEditor.Effects
         protected M Target;
 
         private Dictionary<string, SerializedProperty> _serializedPropertys = new Dictionary<string, SerializedProperty>();
+        private bool _isValid = false;
 
         protected virtual void OnEnable()
         {
             Target = target as M;
+
+            _isValid = Target.GetComponent<MeshRenderer>() || Target.GetComponent<SkinnedMeshRenderer>();
         }
 
         public sealed override void OnInspectorGUI()
         {
+            if (!_isValid)
+            {
+                GUILayout.BeginHorizontal();
+                EditorGUILayout.HelpBox("This object doesn't have MeshRenderer or SkinnedMeshRenderer! so mesh effects will not be supported!", MessageType.Error);
+                GUILayout.EndHorizontal();
+            }
+
             PropertyField("_isPlayOnStart", "Play On Start");
 
+            GUILayout.BeginVertical("Box");
             OnMeshEffectsGUI();
+            GUILayout.EndVertical();
 
             serializedObject.ApplyModifiedProperties();
         }

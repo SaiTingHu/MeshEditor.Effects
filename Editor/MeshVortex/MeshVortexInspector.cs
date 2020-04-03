@@ -11,8 +11,8 @@ namespace MeshEditor.Effects
             base.OnMeshEffectsGUI();
 
             PropertyField("Gravitation");
-            PropertyField("CentripetalDirection");
             PropertyField("CentripetalForce");
+            PropertyField("CentripetalDirection");
             PropertyField("Center");
             PropertyField("Radius");
         }

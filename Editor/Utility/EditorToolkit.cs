@@ -19,7 +19,8 @@ namespace MeshEditor.Effects
             GameObject obj = Selection.activeGameObject;
             if (obj == null)
             {
-                obj = new GameObject("New Vortex");
+                obj = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+                obj.name = "New Vortex";
                 obj.transform.localPosition = Vector3.zero;
                 obj.transform.localRotation = Quaternion.identity;
                 obj.transform.localScale = Vector3.one;
