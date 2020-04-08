@@ -53,6 +53,28 @@ namespace MeshEditor.Effects
             Selection.activeGameObject = obj;
             EditorSceneManager.MarkSceneDirty(obj.scene);
         }
+
+        /// <summary>
+        /// 新建Wave特效
+        /// </summary>
+        [@MenuItem("GameObject/MeshEditor/Effects/Wave", false, 2)]
+        private static void CreateWave()
+        {
+            GameObject obj = Selection.activeGameObject;
+            if (obj == null)
+            {
+                obj = GameObject.CreatePrimitive(PrimitiveType.Capsule);
+                obj.name = "New Wave";
+                obj.transform.localPosition = Vector3.zero;
+                obj.transform.localRotation = Quaternion.identity;
+                obj.transform.localScale = Vector3.one;
+                obj.SetActive(true);
+            }
+
+            obj.AddComponent<MeshWave>();
+            Selection.activeGameObject = obj;
+            EditorSceneManager.MarkSceneDirty(obj.scene);
+        }
         #endregion
     }
 }
