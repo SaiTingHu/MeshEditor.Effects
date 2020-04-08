@@ -6,6 +6,14 @@ namespace MeshEditor.Effects
     [CustomEditor(typeof(MeshVortex))]
     internal sealed class MeshVortexInspector : MeshEffectsBaseInspector<MeshVortex>
     {
+        protected override string HeaderName
+        {
+            get
+            {
+                return "MESH VORTEX";
+            }
+        }
+
         protected override void OnMeshEffectsGUI()
         {
             base.OnMeshEffectsGUI();

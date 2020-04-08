@@ -17,7 +17,14 @@ namespace MeshEditor.Effects
         protected Mesh _mesh { get; private set; }
         protected Material[] _materials { get; private set; }
         
+        /// <summary>
+        /// 是否播放中
+        /// </summary>
         public bool IsPlaying { get; private set; } = false;
+        /// <summary>
+        /// 是否已暂停
+        /// </summary>
+        public bool IsPaused { get; private set; } = false;
 
         private MeshData _data;
         
@@ -36,10 +43,10 @@ namespace MeshEditor.Effects
 
         protected virtual void Update()
         {
-            if (IsPlaying)
+            if (IsPlaying && !IsPaused)
             {
                 UpdateEffect(_data);
-                _mesh.vertices = _data.GetVertices();
+                _data.ApplyData();
             }
         }
 
@@ -47,6 +54,8 @@ namespace MeshEditor.Effects
         {
             
         }
+
+        protected abstract void BeginEffect(MeshData meshData);
 
         protected abstract void UpdateEffect(MeshData meshData);
 
@@ -63,10 +72,14 @@ namespace MeshEditor.Effects
                     _meshRenderer.enabled = true;
 
                     _skinnedMeshRenderer.BakeMesh(_mesh);
-                    _data.ReadData(_mesh.vertices);
                 }
 
+                _data.ReadData();
+
                 IsPlaying = true;
+                IsPaused = false;
+
+                BeginEffect(_data);
             }
             else
             {
@@ -79,7 +92,15 @@ namespace MeshEditor.Effects
         /// </summary>
         public virtual void Pause()
         {
-            IsPlaying = false;
+            IsPaused = true;
+        }
+
+        /// <summary>
+        /// 恢复特效
+        /// </summary>
+        public virtual void UnPause()
+        {
+            IsPaused = false;
         }
 
         /// <summary>
@@ -98,7 +119,7 @@ namespace MeshEditor.Effects
 
             if (_mesh != null && _data != null && isRestoreMesh)
             {
-                _mesh.vertices = _data.GetOriginalVertices();
+                _data.ApplyToOriginal();
             }
         }
 

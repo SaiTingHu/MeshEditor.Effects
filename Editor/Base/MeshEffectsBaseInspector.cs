@@ -10,6 +10,15 @@ namespace MeshEditor.Effects
 
         private Dictionary<string, SerializedProperty> _serializedPropertys = new Dictionary<string, SerializedProperty>();
         private bool _isValid = false;
+        private Color _orange = new Color(1, 0.4f, 0, 1);
+
+        protected virtual string HeaderName
+        {
+            get
+            {
+                return "MESH EFFECTS";
+            }
+        }
 
         protected virtual void OnEnable()
         {
@@ -26,7 +35,15 @@ namespace MeshEditor.Effects
                 EditorGUILayout.HelpBox("This object doesn't have MeshRenderer or SkinnedMeshRenderer! so mesh effects will not be supported!", MessageType.Error);
                 GUILayout.EndHorizontal();
             }
-
+            
+            GUILayout.BeginHorizontal("AC BoldHeader");
+            GUILayout.FlexibleSpace();
+            GUI.color = _orange;
+            GUILayout.Label(HeaderName, EditorStyles.boldLabel);
+            GUI.color = Color.white;
+            GUILayout.FlexibleSpace();
+            GUILayout.EndHorizontal();
+            
             PropertyField("_isPlayOnStart", "Play On Start");
 
             GUILayout.BeginVertical("Box");

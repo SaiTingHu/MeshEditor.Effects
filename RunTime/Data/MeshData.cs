@@ -21,18 +21,26 @@ namespace MeshEditor.Effects
         /// </summary>
         public Dictionary<int, Vertex> Signer = new Dictionary<int, Vertex>();
 
+        private Mesh _mesh;
         private Vector3[] _vertices;
         private Vector3[] _originalVertices;
+        private Vector3[] _normals;
+        private Vector2[] _uvs;
         private int[] _triangles;
         
         public MeshData(Mesh mesh)
         {
-            _vertices = new Vector3[mesh.vertexCount];
-            _originalVertices = new Vector3[mesh.vertexCount];
-            _triangles = new int[mesh.triangles.Length];
-            mesh.vertices.CopyTo(_vertices, 0);
-            mesh.vertices.CopyTo(_originalVertices, 0);
-            mesh.triangles.CopyTo(_triangles, 0);
+            _mesh = mesh;
+            _vertices = new Vector3[_mesh.vertexCount];
+            _originalVertices = new Vector3[_mesh.vertexCount];
+            _normals = new Vector3[_mesh.vertexCount];
+            _uvs = new Vector2[_mesh.vertexCount];
+            _triangles = new int[_mesh.triangles.Length];
+            _mesh.vertices.CopyTo(_vertices, 0);
+            _mesh.vertices.CopyTo(_originalVertices, 0);
+            _mesh.normals.CopyTo(_normals, 0);
+            _mesh.uv.CopyTo(_uvs, 0);
+            _mesh.triangles.CopyTo(_triangles, 0);
 
             //生成顶点代理者
             List<VertexAgent> vertexAgents = new List<VertexAgent>();
@@ -46,11 +54,13 @@ namespace MeshEditor.Effects
             {
                 Vertex vertex = new Vertex();
                 vertex.Position = vertexAgents[0].Position;
+                vertex.Normal = _normals[vertexAgents[0].Index];
+                vertex.UV = _uvs[vertexAgents[0].Index];
                 for (int i = 0; i < vertexAgents.Count; i++)
                 {
                     if (vertex.Position == vertexAgents[i].Position)
                     {
-                        vertex.Vertices.Add(vertexAgents[i].Index);
+                        vertex.Indexs.Add(vertexAgents[i].Index);
                         Signer.Add(vertexAgents[i].Index, vertex);
                         vertexAgents.RemoveAt(i);
                         i -= 1;
@@ -79,40 +89,38 @@ namespace MeshEditor.Effects
         }
 
         /// <summary>
-        /// 获取标准化后的顶点数组
+        /// 应用数据
         /// </summary>
-        /// <returns>顶点数组</returns>
-        public Vector3[] GetVertices()
+        public void ApplyData()
         {
             for (int i = 0; i < Vertices.Count; i++)
             {
-                foreach (int index in Vertices[i].Vertices)
+                foreach (int index in Vertices[i].Indexs)
                 {
                     _vertices[index] = Vertices[i].Position;
                 }
             }
-            return _vertices;
+            _mesh.vertices = _vertices;
         }
 
         /// <summary>
-        /// 获取初始时的顶点数组
+        /// 应用数据到初始状态
         /// </summary>
-        /// <returns>顶点数组</returns>
-        public Vector3[] GetOriginalVertices()
+        public void ApplyToOriginal()
         {
             _originalVertices.CopyTo(_vertices, 0);
-            return _vertices;
+            _mesh.vertices = _vertices;
         }
 
         /// <summary>
-        /// 重新读取顶点数据
+        /// 重新读取数据
         /// </summary>
-        /// <param name="vertices">顶点数组</param>
-        public void ReadData(Vector3[] vertices)
+        public void ReadData()
         {
-            for (int i = 0; i < vertices.Length; i++)
+            _mesh.vertices.CopyTo(_vertices, 0);
+            for (int i = 0; i < _vertices.Length; i++)
             {
-                Signer[i].Position = vertices[i];
+                Signer[i].Position = _vertices[i];
             }
         }
 

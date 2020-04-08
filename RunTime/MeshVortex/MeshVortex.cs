@@ -74,6 +74,11 @@ namespace MeshEditor.Effects
             _centerArea.SetActive(false);
         }
 
+        protected override void BeginEffect(MeshData meshData)
+        {
+            
+        }
+
         protected override void UpdateEffect(MeshData meshData)
         {
             _centerArea.transform.rotation *= _centerAreaForce;
