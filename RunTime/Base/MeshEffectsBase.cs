@@ -64,6 +64,11 @@ namespace MeshEditor.Effects
         /// </summary>
         public virtual void Play()
         {
+            if (IsPlaying)
+            {
+                return;
+            }
+
             if (_mesh != null && _data != null)
             {
                 if (_skinnedMeshRenderer != null)
@@ -109,6 +114,11 @@ namespace MeshEditor.Effects
         /// <param name="isRestoreMesh">是否还原网格为初始状态</param>
         public virtual void Stop(bool isRestoreMesh = true)
         {
+            if (!IsPlaying)
+            {
+                return;
+            }
+
             if (_skinnedMeshRenderer != null)
             {
                 _skinnedMeshRenderer.enabled = true;

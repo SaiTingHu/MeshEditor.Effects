@@ -33,9 +33,31 @@ namespace MeshEditor.Effects
         }
 
         /// <summary>
+        /// 新建Fragmentization特效
+        /// </summary>
+        [@MenuItem("GameObject/MeshEditor/Effects/Fragmentization", false, 1)]
+        private static void CreateFragmentization()
+        {
+            GameObject obj = Selection.activeGameObject;
+            if (obj == null)
+            {
+                obj = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+                obj.name = "New Fragmentization";
+                obj.transform.localPosition = Vector3.zero;
+                obj.transform.localRotation = Quaternion.identity;
+                obj.transform.localScale = Vector3.one;
+                obj.SetActive(true);
+            }
+
+            obj.AddComponent<MeshFragmentization>();
+            Selection.activeGameObject = obj;
+            EditorSceneManager.MarkSceneDirty(obj.scene);
+        }
+
+        /// <summary>
         /// 新建Vortex特效
         /// </summary>
-        [@MenuItem("GameObject/MeshEditor/Effects/Vortex", false, 1)]
+        [@MenuItem("GameObject/MeshEditor/Effects/Vortex", false, 2)]
         private static void CreateVortex()
         {
             GameObject obj = Selection.activeGameObject;
@@ -57,7 +79,7 @@ namespace MeshEditor.Effects
         /// <summary>
         /// 新建Wave特效
         /// </summary>
-        [@MenuItem("GameObject/MeshEditor/Effects/Wave", false, 2)]
+        [@MenuItem("GameObject/MeshEditor/Effects/Wave", false, 3)]
         private static void CreateWave()
         {
             GameObject obj = Selection.activeGameObject;
