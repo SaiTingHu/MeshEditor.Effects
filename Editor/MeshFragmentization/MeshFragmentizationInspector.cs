@@ -21,7 +21,9 @@ namespace MeshEditor.Effects
             base.OnMeshEffectsGUI();
 
             PropertyField("FragPoint");
-            PropertyField("IntervalTime");
+            PropertyField("FragHealth");
+            PropertyField("FragSpeed");
+            PropertyField("FragRate");
 
             GUILayout.BeginHorizontal();
             GUILayout.Label("Fragment Type");

@@ -43,6 +43,17 @@ namespace MeshEditor.Effects
             }
         }
 
+        /// <summary>
+        /// 法线
+        /// </summary>
+        public Vector3 Normal
+        {
+            get
+            {
+                return (Vertex1.Normal + Vertex2.Normal + Vertex3.Normal).normalized;
+            }
+        }
+
         public Triangle(Vertex vertex1, Vertex vertex2, Vertex vertex3, int index1, int index2, int index3)
         {
             Vertex1 = vertex1;

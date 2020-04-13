@@ -15,9 +15,17 @@ namespace MeshEditor.Effects
         /// </summary>
         public Vector3 FragPoint;
         /// <summary>
-        /// 碎化间隔时间
+        /// 碎片生命时长
         /// </summary>
-        public float IntervalTime = 0.2f;
+        public float FragHealth = 1f;
+        /// <summary>
+        /// 碎片散开速度
+        /// </summary>
+        public float FragSpeed = 1f;
+        /// <summary>
+        /// 碎化生成速率
+        /// </summary>
+        public int FragRate = 5;
         /// <summary>
         /// 碎片行为类型
         /// </summary>
@@ -40,9 +48,9 @@ namespace MeshEditor.Effects
 
         protected override void BeginEffect(MeshData meshData)
         {
-            if (IntervalTime < 0)
+            if (FragRate < 0)
             {
-                IntervalTime = 0;
+                FragRate = 1;
             }
 
             GetTrianglesOrder(GetFirstTriangle(meshData));
@@ -50,13 +58,10 @@ namespace MeshEditor.Effects
 
         protected override void UpdateEffect(MeshData meshData)
         {
-            if (_timer < IntervalTime)
+            _timer = FragRate;
+            while (_timer > 0)
             {
-                _timer += Time.deltaTime;
-            }
-            else
-            {
-                _timer = 0;
+                _timer -= 1;
                 Fragmentization(meshData);
             }
         }
@@ -64,11 +69,12 @@ namespace MeshEditor.Effects
         //获取第一个三角面，碎化起点
         private Triangle GetFirstTriangle(MeshData meshData)
         {
+            Vector3 fragPoint = transform.worldToLocalMatrix.MultiplyPoint3x4(FragPoint);
             Triangle triangle = meshData.Triangles[0];
-            float distance = Vector3.Distance(FragPoint, meshData.Triangles[0].Center);
+            float distance = Vector3.Distance(fragPoint, meshData.Triangles[0].Center);
             for (int i = 1; i < meshData.Triangles.Count; i++)
             {
-                float dis = Vector3.Distance(FragPoint, meshData.Triangles[i].Center);
+                float dis = Vector3.Distance(fragPoint, meshData.Triangles[i].Center);
                 if (dis < distance)
                 {
                     triangle = meshData.Triangles[i];
@@ -176,7 +182,7 @@ namespace MeshEditor.Effects
             }
 
             fragmentBehaviour.gameObject.SetActive(true);
-            fragmentBehaviour.Activate(this, triangle, _materials);
+            fragmentBehaviour.Activate(this, triangle, _materials, FragHealth, FragSpeed);
         }
 
         /// <summary>

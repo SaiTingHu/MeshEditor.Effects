@@ -20,14 +20,14 @@ namespace MeshEditor.Effects
         {
             Vector3[] vertices = mesh.vertices;
             Vector3 center = mesh.bounds.center;
-            Vector3 offset = gameObject.transform.position - center;
+            Vector3 offset = gameObject.transform.worldToLocalMatrix.MultiplyPoint3x4(gameObject.transform.position) - center;
             for (int i = 0; i < vertices.Length; i++)
             {
                 vertices[i] += offset;
             }
             mesh.vertices = vertices;
             mesh.RecalculateBounds();
-            gameObject.transform.position = center;
+            gameObject.transform.position = gameObject.transform.localToWorldMatrix.MultiplyPoint3x4(center);
         }
         #endregion
 

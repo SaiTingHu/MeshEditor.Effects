@@ -26,19 +26,13 @@ namespace MeshEditor.Effects
 
         protected virtual void Update()
         {
-            if (!_owner.IsPlaying)
-            {
-                _owner.RecycleFragment(this);
-                return;
-            }
-
             if (!_owner.IsPaused)
             {
                 if (_healthPoint > 0)
                 {
                     _healthPoint -= Time.deltaTime;
 
-                    transform.position += _moveValue * _healthPoint;
+                    transform.position += _moveValue * Time.deltaTime;
                     transform.rotation *= _rotateValue;
                 }
                 else
@@ -48,7 +42,7 @@ namespace MeshEditor.Effects
             }
         }
         
-        public virtual void Activate(MeshFragmentization owner, Triangle triangle, Material[] materials)
+        public virtual void Activate(MeshFragmentization owner, Triangle triangle, Material[] materials, float healthPoint, float speed)
         {
             _owner = owner;
 
@@ -72,22 +66,17 @@ namespace MeshEditor.Effects
             }
             _meshRenderer.materials = _materials;
 
-            Rebirth();
-        }
-
-        protected virtual void Rebirth()
-        {
             transform.localPosition = Vector3.zero;
             transform.localRotation = Quaternion.identity;
             transform.localScale = Vector3.one;
 
-            _moveDirection.Set(0, 90, 0);
-            _moveSpeed = 0.01f;
+            _moveDirection = triangle.Normal;
+            _moveSpeed = speed;
             _rotateDirection.Set(Random.Range(0, 360), Random.Range(0, 360), Random.Range(0, 360));
             _rotateSpeed = Random.Range(1f, 10f);
-            _healthPoint = 2;
+            _healthPoint = healthPoint;
 
-            _moveValue = _moveDirection.normalized * _moveSpeed;
+            _moveValue = _moveDirection * _moveSpeed;
             _rotateValue = Quaternion.AngleAxis(_rotateSpeed, _rotateDirection);
 
             gameObject.CorrectMeshCenter(_mesh);
