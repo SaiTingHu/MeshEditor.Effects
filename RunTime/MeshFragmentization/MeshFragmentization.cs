@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace MeshEditor.Effects
@@ -17,6 +18,10 @@ namespace MeshEditor.Effects
         /// 碎化间隔时间
         /// </summary>
         public float IntervalTime = 0.2f;
+        /// <summary>
+        /// 碎片行为类型
+        /// </summary>
+        public string FragmentType = "MeshEditor.Effects.FragmentBehaviour";
 
         private List<Triangle> _trianglesOrder = new List<Triangle>();
         private HashSet<Triangle> _triangleOpen = new HashSet<Triangle>();
@@ -24,7 +29,15 @@ namespace MeshEditor.Effects
         private HashSet<Triangle> _triangleClose = new HashSet<Triangle>();
         private Queue<FragmentBehaviour> _fragmentPool = new Queue<FragmentBehaviour>();
         private float _timer = 0;
-        
+        private Type _fragmentType;
+
+        protected override void Awake()
+        {
+            base.Awake();
+
+            _fragmentType = Toolkit.GetTypeInRunTimeAssemblies(FragmentType);
+        }
+
         protected override void BeginEffect(MeshData meshData)
         {
             if (IntervalTime < 0)
@@ -159,13 +172,21 @@ namespace MeshEditor.Effects
             {
                 GameObject obj = new GameObject("Fragment");
                 obj.transform.SetParent(transform);
-                obj.transform.localPosition = Vector3.zero;
-                obj.transform.localRotation = Quaternion.identity;
-                obj.transform.localScale = Vector3.one;
-                fragmentBehaviour = obj.AddComponent<FragmentBehaviour>();
+                fragmentBehaviour = obj.AddComponent(_fragmentType) as FragmentBehaviour;
             }
 
-            fragmentBehaviour.Initialization(triangle, _materials);
+            fragmentBehaviour.gameObject.SetActive(true);
+            fragmentBehaviour.Activate(this, triangle, _materials);
+        }
+
+        /// <summary>
+        /// 回收碎片行为对象
+        /// </summary>
+        /// <param name="fragment">碎片</param>
+        public void RecycleFragment(FragmentBehaviour fragment)
+        {
+            _fragmentPool.Enqueue(fragment);
+            fragment.gameObject.SetActive(false);
         }
     }
 }

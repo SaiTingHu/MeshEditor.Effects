@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using UnityEditor;
+using UnityEditor.SceneManagement;
 using UnityEngine;
 
 namespace MeshEditor.Effects
@@ -56,6 +57,22 @@ namespace MeshEditor.Effects
         protected virtual void OnMeshEffectsGUI()
         {
 
+        }
+
+        /// <summary>
+        /// 标记目标已改变
+        /// </summary>
+        protected void HasChanged()
+        {
+            if (!EditorApplication.isPlaying)
+            {
+                EditorUtility.SetDirty(target);
+                Component component = target as Component;
+                if (component != null && component.gameObject.scene != null)
+                {
+                    EditorSceneManager.MarkSceneDirty(component.gameObject.scene);
+                }
+            }
         }
 
         /// <summary>

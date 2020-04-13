@@ -1,4 +1,6 @@
-﻿using UnityEditor;
+﻿using System;
+using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
 
 namespace MeshEditor.Effects
@@ -20,6 +22,29 @@ namespace MeshEditor.Effects
 
             PropertyField("FragPoint");
             PropertyField("IntervalTime");
+
+            GUILayout.BeginHorizontal();
+            GUILayout.Label("Fragment Type");
+            if (GUILayout.Button(Target.FragmentType, "MiniPopup"))
+            {
+                GenericMenu gm = new GenericMenu();
+                List<Type> types = Toolkit.GetTypesInRunTimeAssemblies();
+                for (int i = 0; i < types.Count; i++)
+                {
+                    if (types[i] == typeof(FragmentBehaviour) || types[i].IsSubclassOf(typeof(FragmentBehaviour)))
+                    {
+                        int j = i;
+                        gm.AddItem(new GUIContent(types[j].FullName), Target.FragmentType == types[j].FullName, () =>
+                        {
+                            Undo.RecordObject(target, "Set FragmentType");
+                            Target.FragmentType = types[j].FullName;
+                            HasChanged();
+                        });
+                    }
+                }
+                gm.ShowAsContext();
+            }
+            GUILayout.EndHorizontal();
         }
 
         private void OnSceneGUI()
