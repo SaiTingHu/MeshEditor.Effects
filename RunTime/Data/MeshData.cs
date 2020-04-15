@@ -17,7 +17,7 @@ namespace MeshEditor.Effects
         /// </summary>
         public List<Triangle> Triangles { get; private set; }
         /// <summary>
-        /// 顶点身份标记器（<1, Vertex>表明索引为1的顶点属于Vertex顶点对象）【请勿进行增、删操作】
+        /// 顶点身份标记器，（1, Vertex）表明索引为1的顶点属于Vertex顶点对象【请勿进行增、删操作】
         /// </summary>
         public Dictionary<int, Vertex> Signer { get; private set; }
 
@@ -168,6 +168,16 @@ namespace MeshEditor.Effects
                     Triangles.Add(triangle);
                 }
             }
+        }
+
+        /// <summary>
+        /// 新增三角面
+        /// </summary>
+        /// <param name="triangle">三角面</param>
+        public void AddTriangle(Triangle triangle)
+        {
+            triangle.LinkVertex();
+            Triangles.Add(triangle);
         }
 
         /// <summary>
