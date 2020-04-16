@@ -162,7 +162,14 @@ namespace MeshEditor.Effects
             }
             else
             {
-                Stop(false);
+                if (meshData.Triangles.Count > 0)
+                {
+                    GetTrianglesOrder(GetFirstTriangle(meshData));
+                }
+                else
+                {
+                    Stop(false);
+                }
             }
         }
 
