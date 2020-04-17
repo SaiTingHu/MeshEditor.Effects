@@ -23,29 +23,62 @@ namespace MeshEditor.Effects
         /// </summary>
         public int DisassembleRate = 5;
         /// <summary>
+        /// 组装速率
+        /// </summary>
+        public int AssembleRate = 5;
+        /// <summary>
         /// 碎片行为类型
         /// </summary>
         public string TransformerType = "MeshEditor.Effects.TransformerBehaviour";
 
-        private bool _isTransformer = false;
+        private TransformerState _state = TransformerState.None;
         private Queue<TransformerBehaviour> _transformerPool = new Queue<TransformerBehaviour>();
         private int _timer = 0;
         private Type _transformerType;
+
         private Mesh _targetMesh;
-        
+        private MeshData _targetData;
+        private List<Triangle> _targetTrianglesPool = new List<Triangle>();
+
+        public TransformerState State
+        {
+            get
+            {
+                return _state;
+            }
+            private set
+            {
+                if (_state != value)
+                {
+                    _state = value;
+                    switch (_state)
+                    {
+                        case TransformerState.None:
+                            _meshFilter.mesh = _mesh;
+                            break;
+                        case TransformerState.Disassemble:
+                            _meshFilter.mesh = _mesh;
+                            _targetTrianglesPool.AddRange(_targetData.Triangles);
+                            _targetData.ClearTriangles();
+                            _targetData.ApplyData();
+                            break;
+                        case TransformerState.Assemble:
+                            _meshFilter.mesh = _targetMesh;
+                            break;
+                    }
+                }
+            }
+        }
+
         protected override void Awake()
         {
             base.Awake();
 
             _transformerType = Toolkit.GetTypeInRunTimeAssemblies(TransformerType);
 
-            _targetMesh = new Mesh();
-            _targetMesh.vertices = TargetMesh.vertices;
-            _targetMesh.normals = TargetMesh.normals;
-            _targetMesh.uv = TargetMesh.uv;
-            _targetMesh.triangles = TargetMesh.triangles;
-            _targetMesh.RecalculateBounds();
-            _targetMesh.RecalculateNormals();
+            CreateTargetMesh(TargetMesh);
+
+            State = TransformerState.Disassemble;
         }
         
         protected override void BeginEffect(MeshData meshData)
@@ -55,27 +88,32 @@ namespace MeshEditor.Effects
                 DisassembleRate = 1;
             }
 
-            if (_isTransformer)
-            {
-                _isTransformer = false;
-                _meshFilter.mesh = _mesh;
-            }
+            State = TransformerState.Disassemble;
         }
 
         protected override void UpdateEffect(MeshData meshData)
         {
-            if (!_isTransformer)
+            switch (State)
             {
-                _timer = DisassembleRate;
-                while (_timer > 0)
-                {
-                    _timer -= 1;
-                    Disassemble(meshData);
-                }
-            }
-            else
-            {
-
+                case TransformerState.None:
+                    Stop();
+                    break;
+                case TransformerState.Disassemble:
+                    _timer = DisassembleRate;
+                    while (_timer > 0)
+                    {
+                        _timer -= 1;
+                        Disassemble(meshData);
+                    }
+                    break;
+                case TransformerState.Assemble:
+                    _timer = AssembleRate;
+                    while (_timer > 0)
+                    {
+                        _timer -= 1;
+                        Assemble();
+                    }
+                    break;
             }
         }
 
@@ -84,7 +122,16 @@ namespace MeshEditor.Effects
             
         }
 
-        //分解
+        private void CreateTargetMesh(Mesh targetMesh)
+        {
+            _targetMesh = new Mesh();
+            _targetMesh.vertices = targetMesh.vertices;
+            _targetMesh.normals = targetMesh.normals;
+            _targetMesh.uv = targetMesh.uv;
+            _targetMesh.triangles = targetMesh.triangles;
+            _targetData = new MeshData(_targetMesh);
+        }
+
         private void Disassemble(MeshData meshData)
         {
             if (meshData.Triangles.Count > 0)
@@ -95,28 +142,65 @@ namespace MeshEditor.Effects
             }
             else
             {
-                _isTransformer = true;
+                State = TransformerState.Assemble;
                 _timer = 0;
             }
         }
 
-        //生成碎片行为对象
-        private void GenerateTransformer(Triangle triangle)
+        private void Assemble()
         {
-            TransformerBehaviour transformerBehaviour;
-            if (_transformerPool.Count > 0)
+            if (_targetTrianglesPool.Count > 0)
             {
-                transformerBehaviour = _transformerPool.Dequeue();
+                Triangle triangle = _targetTrianglesPool[0];
+                _targetTrianglesPool.RemoveAt(0);
+
+                TransformerBehaviour transformerBehaviour;
+                if (_transformerPool.Count > 0)
+                {
+                    transformerBehaviour = _transformerPool.Dequeue();
+                }
+                else
+                {
+                    GameObject obj = new GameObject("Fragment");
+                    obj.transform.SetParent(transform);
+                    transformerBehaviour = obj.AddComponent(_transformerType) as TransformerBehaviour;
+                }
+
+                transformerBehaviour.gameObject.SetActive(true);
+                transformerBehaviour.Activate(this, triangle, TargetMaterials, 1, 10);
             }
             else
             {
-                GameObject obj = new GameObject("Fragment");
-                obj.transform.SetParent(transform);
-                transformerBehaviour = obj.AddComponent(_transformerType) as TransformerBehaviour;
+                State = TransformerState.None;
+                _timer = 0;
             }
+        }
+
+        private void GenerateTransformer(Triangle triangle)
+        {
+            GameObject obj = new GameObject("Fragment");
+            obj.transform.SetParent(transform);
+            TransformerBehaviour transformerBehaviour = obj.AddComponent(_transformerType) as TransformerBehaviour;
 
             transformerBehaviour.gameObject.SetActive(true);
             transformerBehaviour.Activate(this, triangle, _materials, 1, 10);
+            _transformerPool.Enqueue(transformerBehaviour);
+        }
+        
+        public enum TransformerState
+        {
+            /// <summary>
+            /// 空闲
+            /// </summary>
+            None,
+            /// <summary>
+            /// 分解
+            /// </summary>
+            Disassemble,
+            /// <summary>
+            /// 组装
+            /// </summary>
+            Assemble
         }
     }
 }

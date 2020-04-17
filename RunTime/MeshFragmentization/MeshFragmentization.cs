@@ -32,7 +32,7 @@ namespace MeshEditor.Effects
         public string FragmentType = "MeshEditor.Effects.FragmentBehaviour";
 
         private List<Triangle> _trianglesOrder = new List<Triangle>();
-        private List<Triangle> _trianglesPool = new List<Triangle>();
+        //private List<Triangle> _trianglesPool = new List<Triangle>();
         private HashSet<Triangle> _triangleOpen = new HashSet<Triangle>();
         private HashSet<Triangle> _triangleReady = new HashSet<Triangle>();
         private HashSet<Triangle> _triangleClose = new HashSet<Triangle>();
@@ -69,11 +69,11 @@ namespace MeshEditor.Effects
 
         protected override void EndEffect(MeshData meshData)
         {
-            this.NextFrameExecute(() =>
-            {
-                meshData.AddTriangles(_trianglesPool);
-                _trianglesPool.Clear();
-            });
+            //this.NextFrameExecute(() =>
+            //{
+            //    meshData.AddTriangles(_trianglesPool);
+            //    _trianglesPool.Clear();
+            //});
         }
 
         //获取第一个三角面，碎化起点
@@ -168,7 +168,7 @@ namespace MeshEditor.Effects
                 Triangle triangle = _trianglesOrder[0];
                 _trianglesOrder.RemoveAt(0);
                 meshData.RemoveTriangle(triangle);
-                _trianglesPool.Add(triangle);
+                //_trianglesPool.Add(triangle);
                 GenerateFragment(triangle);
             }
             else
