@@ -62,6 +62,11 @@ namespace MeshEditor.Effects
             }
         }
 
+        protected override void EndEffect(MeshData meshData)
+        {
+            
+        }
+
         //应用风力
         private Vector3 ApplyWindPower(Vector3 vertex, float factor)
         {

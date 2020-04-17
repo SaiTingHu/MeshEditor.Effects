@@ -3,12 +3,12 @@
 namespace MeshEditor.Effects
 {
     /// <summary>
-    /// 网格碎化碎片行为对象
+    /// 网格变形碎片行为对象
     /// </summary>
     [DisallowMultipleComponent]
-    public class FragmentBehaviour : MonoBehaviour
+    public class TransformerBehaviour : MonoBehaviour
     {
-        protected MeshFragmentization _owner { get; private set; }
+        protected MeshTransformer _owner { get; private set; }
         protected Fragment _data { get; private set; }
         protected Mesh _mesh { get; private set; }
         protected Material[] _materials { get; private set; }
@@ -19,14 +19,13 @@ namespace MeshEditor.Effects
         protected float _moveSpeed;
         protected Vector3 _rotateDirection;
         protected float _rotateSpeed;
-        protected float _healthPoint;
 
         private Vector3 _moveValue;
         private Quaternion _rotateValue;
 
         protected virtual void Update()
         {
-            if (!_owner.IsPaused)
+            /*if (!_owner.IsPaused)
             {
                 if (_healthPoint > 0)
                 {
@@ -39,10 +38,10 @@ namespace MeshEditor.Effects
                 {
                     _owner.RecycleFragment(this);
                 }
-            }
+            }*/
         }
-        
-        public virtual void Activate(MeshFragmentization owner, Triangle triangle, Material[] materials, float healthPoint, float speed)
+
+        public virtual void Activate(MeshTransformer owner, Triangle triangle, Material[] materials, float moveSpeed, float rotateSpeed)
         {
             _owner = owner;
 
@@ -53,7 +52,7 @@ namespace MeshEditor.Effects
             if (_mesh == null) _mesh = new Mesh();
             _data.ApplyData(_mesh);
             _materials = materials;
-            
+
             if (_meshFilter == null)
             {
                 _meshFilter = gameObject.AddComponent<MeshFilter>();
@@ -71,10 +70,9 @@ namespace MeshEditor.Effects
             transform.localScale = Vector3.one;
 
             _moveDirection = triangle.Normal;
-            _moveSpeed = speed;
-            _rotateDirection.Set(Random.Range(0, 360), Random.Range(0, 360), Random.Range(0, 360));
+            _moveSpeed = moveSpeed;
+            _rotateDirection.Set(0, 90, 0);
             _rotateSpeed = Random.Range(1f, 10f);
-            _healthPoint = healthPoint;
 
             _moveValue = _moveDirection * _moveSpeed;
             _rotateValue = Quaternion.AngleAxis(_rotateSpeed, _rotateDirection);

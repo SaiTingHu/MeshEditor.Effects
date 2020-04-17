@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
 using UnityEngine;
@@ -11,6 +12,24 @@ namespace MeshEditor.Effects
     public static class Toolkit
     {
         #region 网格工具
+        private static WaitForEndOfFrame EndOfFrame = new WaitForEndOfFrame();
+
+        /// <summary>
+        /// 下一帧执行操作
+        /// </summary>
+        /// <param name="behaviour">行为对象实例</param>
+        /// <param name="action">操作</param>
+        public static void NextFrameExecute(this MonoBehaviour behaviour, Action action)
+        {
+            behaviour.StartCoroutine(NextFrameExecute(action));
+        }
+        private static IEnumerator NextFrameExecute(Action action)
+        {
+            yield return EndOfFrame;
+
+            action();
+        }
+
         /// <summary>
         /// 纠正网格中心
         /// </summary>

@@ -54,29 +54,12 @@ namespace MeshEditor.Effects
             Destroy(_centerArea);
             _centerArea = null;
         }
-
-        public override void Play()
-        {
-            base.Play();
-
-            if (IsPlaying)
-            {
-                _realCenter = transform.worldToLocalMatrix.MultiplyPoint3x4(Center);
-                _centerArea.transform.position = Center;
-                _centerArea.SetActive(true);
-            }
-        }
-
-        public override void Stop(bool isRestoreMesh = true)
-        {
-            base.Stop(isRestoreMesh);
-
-            _centerArea.SetActive(false);
-        }
-
+        
         protected override void BeginEffect(MeshData meshData)
         {
-            
+            _realCenter = transform.worldToLocalMatrix.MultiplyPoint3x4(Center);
+            _centerArea.transform.position = Center;
+            _centerArea.SetActive(true);
         }
 
         protected override void UpdateEffect(MeshData meshData)
@@ -93,6 +76,11 @@ namespace MeshEditor.Effects
                     vertex.Position = ApplyCentripetal(vertex.Position, distance + Time.deltaTime);
                 }
             }
+        }
+
+        protected override void EndEffect(MeshData meshData)
+        {
+            _centerArea.SetActive(false);
         }
 
         //应用引力

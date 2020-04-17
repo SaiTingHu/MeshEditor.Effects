@@ -72,7 +72,12 @@ namespace MeshEditor.Effects
                 vertex.Position = _applyWave(_positions[i]);
             }
         }
-        
+
+        protected override void EndEffect(MeshData meshData)
+        {
+            
+        }
+
         private void UpdateWeight()
         {
             if (_weight < _2PI)

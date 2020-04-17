@@ -59,6 +59,8 @@ namespace MeshEditor.Effects
 
         protected abstract void UpdateEffect(MeshData meshData);
 
+        protected abstract void EndEffect(MeshData meshData);
+
         /// <summary>
         /// 播放特效
         /// </summary>
@@ -112,23 +114,42 @@ namespace MeshEditor.Effects
         /// 停止特效
         /// </summary>
         /// <param name="isRestoreMesh">是否还原网格为初始状态</param>
-        public virtual void Stop(bool isRestoreMesh = true)
+        public virtual void Stop(bool isRestoreMesh = false)
         {
             if (!IsPlaying)
             {
                 return;
             }
+            
+            IsPlaying = false;
+            IsPaused = false;
 
-            if (_skinnedMeshRenderer != null)
+            EndEffect(_data);
+
+            if (isRestoreMesh)
             {
-                _skinnedMeshRenderer.enabled = true;
-                _meshRenderer.enabled = false;
+                Restore();
+            }
+        }
+
+        /// <summary>
+        /// 还原网格为初始状态
+        /// </summary>
+        public virtual void Restore()
+        {
+            if (IsPlaying)
+            {
+                return;
             }
 
-            IsPlaying = false;
-
-            if (_mesh != null && _data != null && isRestoreMesh)
+            if (_mesh != null && _data != null)
             {
+                if (_skinnedMeshRenderer != null)
+                {
+                    _skinnedMeshRenderer.enabled = true;
+                    _meshRenderer.enabled = false;
+                }
+
                 _data.ApplyToOriginal();
             }
         }

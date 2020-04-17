@@ -181,6 +181,19 @@ namespace MeshEditor.Effects
         }
 
         /// <summary>
+        /// 新增三角面
+        /// </summary>
+        /// <param name="triangles">三角面集合</param>
+        public void AddTriangles(List<Triangle> triangles)
+        {
+            for (int i = 0; i < triangles.Count; i++)
+            {
+                triangles[i].LinkVertex();
+                Triangles.Add(triangles[i]);
+            }
+        }
+
+        /// <summary>
         /// 移除三角面
         /// </summary>
         /// <param name="triangle">三角面</param>
@@ -188,6 +201,16 @@ namespace MeshEditor.Effects
         {
             triangle.BrokenLinkVertex();
             Triangles.Remove(triangle);
+        }
+
+        /// <summary>
+        /// 移除三角面
+        /// </summary>
+        /// <param name="index">三角面索引</param>
+        public void RemoveAtTriangle(int index)
+        {
+            Triangles[index].BrokenLinkVertex();
+            Triangles.RemoveAt(index);
         }
 
         /// <summary>
