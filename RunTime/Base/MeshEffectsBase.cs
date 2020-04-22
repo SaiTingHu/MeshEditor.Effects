@@ -45,7 +45,7 @@ namespace MeshEditor.Effects
         {
             if (IsPlaying && !IsPaused)
             {
-                UpdateEffect(_data);
+                OnUpdateEffect(_data);
                 _data.ApplyData();
             }
         }
@@ -55,11 +55,11 @@ namespace MeshEditor.Effects
             
         }
 
-        protected abstract void BeginEffect(MeshData meshData);
+        protected abstract void OnBeginEffect(MeshData meshData);
 
-        protected abstract void UpdateEffect(MeshData meshData);
+        protected abstract void OnUpdateEffect(MeshData meshData);
 
-        protected abstract void EndEffect(MeshData meshData);
+        protected abstract void OnEndEffect(MeshData meshData);
 
         /// <summary>
         /// 播放特效
@@ -86,7 +86,7 @@ namespace MeshEditor.Effects
                 IsPlaying = true;
                 IsPaused = false;
 
-                BeginEffect(_data);
+                OnBeginEffect(_data);
             }
             else
             {
@@ -124,7 +124,7 @@ namespace MeshEditor.Effects
             IsPlaying = false;
             IsPaused = false;
 
-            EndEffect(_data);
+            OnEndEffect(_data);
 
             if (isRestoreMesh)
             {

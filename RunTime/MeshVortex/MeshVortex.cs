@@ -55,14 +55,14 @@ namespace MeshEditor.Effects
             _centerArea = null;
         }
         
-        protected override void BeginEffect(MeshData meshData)
+        protected override void OnBeginEffect(MeshData meshData)
         {
             _realCenter = transform.worldToLocalMatrix.MultiplyPoint3x4(Center);
             _centerArea.transform.position = Center;
             _centerArea.SetActive(true);
         }
 
-        protected override void UpdateEffect(MeshData meshData)
+        protected override void OnUpdateEffect(MeshData meshData)
         {
             _centerArea.transform.rotation *= _centerAreaForce;
 
@@ -78,7 +78,7 @@ namespace MeshEditor.Effects
             }
         }
 
-        protected override void EndEffect(MeshData meshData)
+        protected override void OnEndEffect(MeshData meshData)
         {
             _centerArea.SetActive(false);
         }

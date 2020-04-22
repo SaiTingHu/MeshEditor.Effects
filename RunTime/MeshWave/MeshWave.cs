@@ -36,7 +36,7 @@ namespace MeshEditor.Effects
             _2PI = Mathf.PI * 2;
         }
 
-        protected override void BeginEffect(MeshData meshData)
+        protected override void OnBeginEffect(MeshData meshData)
         {
             switch (Direction)
             {
@@ -62,7 +62,7 @@ namespace MeshEditor.Effects
             }
         }
 
-        protected override void UpdateEffect(MeshData meshData)
+        protected override void OnUpdateEffect(MeshData meshData)
         {
             UpdateWeight();
 
@@ -73,7 +73,7 @@ namespace MeshEditor.Effects
             }
         }
 
-        protected override void EndEffect(MeshData meshData)
+        protected override void OnEndEffect(MeshData meshData)
         {
             
         }

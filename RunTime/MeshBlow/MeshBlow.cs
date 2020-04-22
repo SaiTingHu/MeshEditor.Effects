@@ -35,7 +35,7 @@ namespace MeshEditor.Effects
             _blowsDirection = direction.normalized;
         }
         
-        protected override void BeginEffect(MeshData meshData)
+        protected override void OnBeginEffect(MeshData meshData)
         {
             if (!_isGenerate)
             {
@@ -50,7 +50,7 @@ namespace MeshEditor.Effects
             }
         }
 
-        protected override void UpdateEffect(MeshData meshData)
+        protected override void OnUpdateEffect(MeshData meshData)
         {
             for (int i = 0; i < meshData.Vertices.Count; i++)
             {
@@ -62,7 +62,7 @@ namespace MeshEditor.Effects
             }
         }
 
-        protected override void EndEffect(MeshData meshData)
+        protected override void OnEndEffect(MeshData meshData)
         {
             
         }

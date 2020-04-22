@@ -47,7 +47,7 @@ namespace MeshEditor.Effects
             _fragmentType = Toolkit.GetTypeInRunTimeAssemblies(FragmentType);
         }
 
-        protected override void BeginEffect(MeshData meshData)
+        protected override void OnBeginEffect(MeshData meshData)
         {
             if (FragRate < 0)
             {
@@ -57,7 +57,7 @@ namespace MeshEditor.Effects
             GetTrianglesOrder(GetFirstTriangle(meshData));
         }
 
-        protected override void UpdateEffect(MeshData meshData)
+        protected override void OnUpdateEffect(MeshData meshData)
         {
             _timer = FragRate;
             while (_timer > 0)
@@ -67,7 +67,7 @@ namespace MeshEditor.Effects
             }
         }
 
-        protected override void EndEffect(MeshData meshData)
+        protected override void OnEndEffect(MeshData meshData)
         {
             //this.NextFrameExecute(() =>
             //{
