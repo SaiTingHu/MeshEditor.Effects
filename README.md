@@ -1,20 +1,20 @@
 # MeshEditor.Effects
-¡¾Íø¸ñ±à¼­Æ÷¡¿ÌØÐ§Æª£¨Mesh Effects Toolkit£©
+ã€ç½‘æ ¼ç¼–è¾‘å™¨ã€‘ç‰¹æ•ˆç¯‡ï¼ˆMesh Effects Toolkitï¼‰
 
-## »·¾³
+## çŽ¯å¢ƒ
 
-- Unity°æ±¾£º2018.3.0¼°ÒÔÉÏ¡£
+- Unityç‰ˆæœ¬ï¼š2018.3.0åŠä»¥ä¸Šã€‚
 
-## Ä£¿é¼ò½é
+## æ¨¡å—ç®€ä»‹
 
-- [Mesh Blow] - Íø¸ñ¼²·çÌØÐ§£¬ÉèÖÃÒ»¸ö¼²·ç´µÀ´µÄ·½Ïò£¬Ê¹µÃÍø¸ñ±ßÔµÔ½±³Àë¼²·çµÄ¶¥µãÊÜµ½µÄÀ­³¶Á¦Ô½´ó¡£
+- [Mesh Blow] - ç½‘æ ¼ç–¾é£Žç‰¹æ•ˆï¼Œè®¾ç½®ä¸€ä¸ªç–¾é£Žå¹æ¥çš„æ–¹å‘ï¼Œä½¿å¾—ç½‘æ ¼è¾¹ç¼˜è¶ŠèƒŒç¦»ç–¾é£Žçš„é¡¶ç‚¹å—åˆ°çš„æ‹‰æ‰¯åŠ›è¶Šå¤§ã€‚
 
-- [Mesh Fragmentization] - Íø¸ñËé»¯ÌØÐ§£¬ÉèÖÃÒ»¸öËé»¯ÆðÊ¼µã£¬Ê¹µÃÍø¸ñ´Ó¸Ãµã¿ªÊ¼Öð½¥ÆÆËé¡£
+- [Mesh Fragmentization] - ç½‘æ ¼ç¢ŽåŒ–ç‰¹æ•ˆï¼Œè®¾ç½®ä¸€ä¸ªç¢ŽåŒ–èµ·å§‹ç‚¹ï¼Œä½¿å¾—ç½‘æ ¼ä»Žè¯¥ç‚¹å¼€å§‹é€æ¸ç ´ç¢Žã€‚
 
-- [Mesh Vortex] - Íø¸ñÎÐÁ÷ÌØÐ§£¬ÉèÖÃÒ»¸öÎÐÁ÷ÖÐÐÄ£¬Ê¹µÃÍø¸ñÔÚÎÐÁ÷ÖÐÐÄµÄÒýÁ¦ºÍÏòÐÄÁ¦µÄÀ­³¶ÏÂÖð½¥Å¤Çú±äÐÎÖ±µ½±»ÎüÈëÎÐÁ÷ÖÐÐÄ¡£
+- [Mesh Vortex](https://wanderer.blog.csdn.net/article/details/105680579) - ç½‘æ ¼æ¶¡æµç‰¹æ•ˆï¼Œè®¾ç½®ä¸€ä¸ªæ¶¡æµä¸­å¿ƒï¼Œä½¿å¾—ç½‘æ ¼åœ¨æ¶¡æµä¸­å¿ƒçš„å¼•åŠ›å’Œå‘å¿ƒåŠ›çš„æ‹‰æ‰¯ä¸‹é€æ¸æ‰­æ›²å˜å½¢ç›´åˆ°è¢«å¸å…¥æ¶¡æµä¸­å¿ƒã€‚
 
-- [Mesh Wave] - Íø¸ñ²¨¶¯ÌØÐ§£¬ÉèÖÃÒ»¸ö²¨¶¯·½Ïò£¬Ê¹µÃÍø¸ñÔÚ¸Ã·½ÏòÖáÉÏÒÔÕýÏÒÇúÏß²¨¶¯¡£
+- [Mesh Wave] - ç½‘æ ¼æ³¢åŠ¨ç‰¹æ•ˆï¼Œè®¾ç½®ä¸€ä¸ªæ³¢åŠ¨æ–¹å‘ï¼Œä½¿å¾—ç½‘æ ¼åœ¨è¯¥æ–¹å‘è½´ä¸Šä»¥æ­£å¼¦æ›²çº¿æ³¢åŠ¨ã€‚
 
-## Ê¹ÓÃ·½·¨
+## ä½¿ç”¨æ–¹æ³•
 
-- 1.²ÎÔÄ¸÷¸öÄ£¿éµÄ°ïÖúÎÄµµ¡£
+- 1.å‚é˜…å„ä¸ªæ¨¡å—çš„å¸®åŠ©æ–‡æ¡£ã€‚
