@@ -14,6 +14,10 @@ namespace MeshEditor.Effects
         /// </summary>
         public WaveDirection Direction = WaveDirection.Y;
         /// <summary>
+        /// 扁平模式
+        /// </summary>
+        public bool IsFlat = false;
+        /// <summary>
         /// 波动力度
         /// </summary>
         public float WavePower = 1;
@@ -41,13 +45,16 @@ namespace MeshEditor.Effects
             switch (Direction)
             {
                 case WaveDirection.X:
-                    _applyWave = ApplyWaveX;
+                    if (IsFlat) _applyWave = ApplyWaveFlatX;
+                    else _applyWave = ApplyWaveX;
                     break;
                 case WaveDirection.Y:
-                    _applyWave = ApplyWaveY;
+                    if (IsFlat) _applyWave = ApplyWaveFlatY;
+                    else _applyWave = ApplyWaveY;
                     break;
                 case WaveDirection.Z:
-                    _applyWave = ApplyWaveZ;
+                    if (IsFlat) _applyWave = ApplyWaveFlatZ;
+                    else _applyWave = ApplyWaveZ;
                     break;
             }
 
@@ -105,6 +112,24 @@ namespace MeshEditor.Effects
         private Vector3 ApplyWaveZ(Vector3 vertex)
         {
             vertex.y += WavePower * Mathf.Sin(vertex.z + _weight);
+            return vertex;
+        }
+
+        private Vector3 ApplyWaveFlatX(Vector3 vertex)
+        {
+            vertex.y = WavePower * Mathf.Sin(vertex.x + _weight);
+            return vertex;
+        }
+
+        private Vector3 ApplyWaveFlatY(Vector3 vertex)
+        {
+            vertex.x = WavePower * Mathf.Sin(vertex.y + _weight);
+            return vertex;
+        }
+
+        private Vector3 ApplyWaveFlatZ(Vector3 vertex)
+        {
+            vertex.y = WavePower * Mathf.Sin(vertex.z + _weight);
             return vertex;
         }
 

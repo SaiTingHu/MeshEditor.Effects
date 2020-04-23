@@ -18,6 +18,7 @@ namespace MeshEditor.Effects
             base.OnMeshEffectsGUI();
 
             PropertyField("Direction");
+            PropertyField("IsFlat");
             PropertyField("WavePower");
             PropertyField("WaveSpeed");
         }
