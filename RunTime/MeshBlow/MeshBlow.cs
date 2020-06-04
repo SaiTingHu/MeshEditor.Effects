@@ -27,12 +27,18 @@ namespace MeshEditor.Effects
         private Vector3[] _positions;
         
         /// <summary>
-        /// 设置风向
+        /// 风向
         /// </summary>
-        /// <param name="direction">风向</param>
-        public void SetDirection(Vector3 direction)
+        public Vector3 BlowsDirection
         {
-            _blowsDirection = direction.normalized;
+            get
+            {
+                return _blowsDirection;
+            }
+            set
+            {
+                _blowsDirection = value.normalized;
+            }
         }
         
         protected override void OnBeginEffect(MeshData meshData)
