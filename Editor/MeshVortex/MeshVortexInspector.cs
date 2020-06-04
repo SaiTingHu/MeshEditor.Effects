@@ -14,6 +14,13 @@ namespace MeshEditor.Effects
             }
         }
 
+        protected override void OnEnable()
+        {
+            base.OnEnable();
+
+            Tools.current = Tool.View;
+        }
+
         protected override void OnMeshEffectsGUI()
         {
             base.OnMeshEffectsGUI();
