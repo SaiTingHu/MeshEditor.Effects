@@ -69,7 +69,7 @@ namespace MeshEditor.Effects
         /// <summary>
         /// 链接所有顶点
         /// </summary>
-        public void LinkVertex()
+        internal void LinkVertex()
         {
             Vertex1.Triangles.Add(this);
             Vertex2.Triangles.Add(this);
@@ -79,7 +79,7 @@ namespace MeshEditor.Effects
         /// <summary>
         /// 断开所有顶点链接
         /// </summary>
-        public void BrokenLinkVertex()
+        internal void BrokenLinkVertex()
         {
             Vertex1.Triangles.Remove(this);
             Vertex2.Triangles.Remove(this);

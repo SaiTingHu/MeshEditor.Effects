@@ -128,7 +128,7 @@ namespace MeshEditor.Effects
 
             if (isRestoreMesh)
             {
-                Restore();
+                this.NextFrameExecute(Restore);
             }
         }
 

@@ -225,7 +225,10 @@ namespace MeshEditor.Effects
             Triangles.Clear();
         }
 
-        private class VertexAgent
+        /// <summary>
+        /// 顶点代理者
+        /// </summary>
+        private struct VertexAgent
         {
             public int Index;
             public Vector3 Position;
